@@ -1,0 +1,25 @@
+TASK-1:
+To deploy WordPress and MySQL on a single EC2 instance in a monolithic setup, launch a t2.micro EC2 instance with an Ubuntu-based AMI.
+Configure the security group to allow HTTP traffic on port 80 and SSH access on port 22. SSH into the instance, install Apache, PHP, MySQL, and the necessary extensions. 
+After securing MySQL, create a WordPress database and user. Download and install WordPress, then configure the wp-config.php file with the correct database credentials. 
+Finally, restart Apache to apply changes.
+With this setup, WordPress and MySQL will run on the same EC2 instance, and you can access the WordPress homepage via the EC2 instance's public IP.
+
+
+TASK-2:
+To set up WordPress and MySQL on two EC2 instances, launch two EC2 instances: one for WordPress and one for MySQL, 
+both of type t2.micro using an Ubuntu-based AMI. For the MySQL EC2 instance, 
+create a security group allowing inbound traffic on port 3306 from the WordPress instance only, 
+and allow inbound traffic on port 22 for SSH access. For the WordPress EC2 instance, allow inbound traffic on port 80 for HTTP access and port 22 for SSH access.
+Ensure the WordPress instance can connect to MySQL by allowing outbound traffic on port 3306.
+SSH into the MySQL EC2 instance and install MySQL using the following commands: sudo apt update and sudo apt install mysql-server. 
+After securing the installation with sudo mysql_secure_installation, 
+edit the MySQL configuration file to allow connections from external IPs by setting bind-address = 0.0.0.0. Restart MySQL with sudo systemctl restart mysql. 
+Then, create a database (CREATE DATABASE wp;), a user (CREATE USER 'wp_user'@'%' IDENTIFIED BY 'Testpassword@123';), and grant privileges to the user 
+(GRANT ALL PRIVILEGES ON wp.* TO 'wp_user'@'%';).
+For the WordPress EC2 instance, SSH in and install Apache, PHP, and necessary libraries with sudo apt update, 
+sudo apt install apache2 php php-mysql libapache2-mod-php wget unzip. Download and install WordPress by running wget https://wordpress.org/latest.tar.gz, extracting the archive,
+and moving the WordPress folder to the web root (sudo mv wordpress /var/www/html). Update the WordPress configuration file (wp-config.php) to include the MySQL details 
+such as DB_NAME, DB_USER, DB_PASSWORD, and DB_HOST using the MySQL EC2 instance's private IP.
+After completing these steps, you will have WordPress running on one EC2 instance with a MySQL backend hosted on another, 
+and the WordPress homepage will be accessible via the public IP of the WordPress EC2 instance.
